@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory of Distribution - An In-Depth Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            margin: 30px 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title-slide {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            color: white;
+            text-align: center;
+            padding: 120px 80px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #e94560;
+        }
+
+        .title-slide::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(233, 69, 96, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .title-slide .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .title-slide h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #ffffff, #e94560, #ffffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        .title-slide .subtitle {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5em;
+            margin: 30px 0;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: #f0f0f0;
+        }
+
+        .title-slide .decorative-line {
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #e94560, transparent);
+            margin: 40px auto;
+        }
+
+        .title-slide .authors {
+            margin-top: 60px;
+            font-size: 1.2em;
+            line-height: 2;
+        }
+
+        .title-slide .authors .presented-by {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1em;
+            color: #e94560;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .title-slide .authors .names {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+
+        .title-slide .guidance {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(233, 69, 96, 0.3);
+        }
+
+        .title-slide .guidance .label {
+            font-family: 'Merriweather', serif;
+            font-size: 1em;
+            color: #e94560;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .title-slide .institution {
+            margin-top: 30px;
+            font-family: 'Merriweather', serif;
+            font-size: 1.1em;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: #16213e;
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #e94560;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-family: 'Poppins', sans-serif;
+            color: #0f3460;
+            font-size: 1.9em;
+            margin: 30px 0 20px 0;
+            font-weight: 600;
+        }
+
+        p, li {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15em;
+            line-height: 1.8;
+            margin: 15px 0;
+            font-weight: 400;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            border-left: 5px solid #e94560;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .formula-box {
+            background: #f8f9fa;
+            border: 2px solid #0f3460;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 18px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.05em;
+        }
+
+        .comparison-table tr:hover {
+            background: #f5f7fa;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 500px;
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding-left: 35px;
+            position: relative;
+            margin: 15px 0;
+        }
+
+        ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #e94560;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .key-insight {
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #ff6b35;
+        }
+
+        .key-insight h4 {
+            color: #c23616;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .navigation button {
+            background: linear-gradient(135deg, #0f3460 0%, #e94560 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 0 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .navigation button:hover {
+            transform: scale(1.1);
+        }
+
+        .diagram-label {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-family: 'Merriweather', serif;
+        }
+
+        .references-slide {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .references-slide h2 {
+            color: #16213e;
+            border-bottom-color: #e94560;
+        }
+
+        .reference-item {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid #0f3460;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .reference-item a {
+            color: #0f3460;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .reference-item a:hover {
+            color: #e94560;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            h2 {
+                font-size: 2em;
+            }
+            .title-slide h1 {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Title Slide -->
+        <div class="slide title-slide">
+            <div class="content">
+                <h1>The Theory of Distribution</h1>
+                <div class="decorative-line"></div>
+                <div class="subtitle">An In-Depth Economic Analysis</div>
+                
+                <div class="authors">
+                    <div class="presented-by">Presented By</div>
+                    <div class="names">Dhritabrata Swarnakar</div>
+                    <div style="font-size: 0.9em; opacity: 0.8;">(25MSG1R16)</div>
+                    <div class="names" style="margin-top: 25px;">Lav Yadav</div>
+                    <div style="font-size: 0.9em; opacity: 0.8;">(25MSG1R27)</div>
+                </div>
+
+                <div class="guidance">
+                    <div class="label">Under the Guidance of</div>
+                    <div class="names">Prof. G. Sunita</div>
+                </div>
+
+                <div class="institution">
+                    Department of Management<br>
+                    National Institute of Technology, Warangal
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction Slide -->
+        <div class="slide">
+            <h2>What is the Theory of Distribution?</h2>
+            <p>The theory of distribution is a foundational area of economic science dedicated to the systematic explanation of how a nation's total output, income, or wealth is shared among its population or the factors of production.</p>
+            
+            <div class="highlight-box">
+                <h3>Core Questions</h3>
+                <ul>
+                    <li><strong>"Who gets what?"</strong></li>
+                    <li><strong>"Why?"</strong></li>
+                </ul>
+            </div>
+
+            <p>Also referred to as the <strong>Theory of Factor Pricing</strong>, focusing on determining the prices paid for services rendered by factors of production:</p>
+            
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li><strong>Wages</strong> - price for labor services</li>
+                        <li><strong>Rent</strong> - price for land use</li>
+                    </ul>
+                </div>
+                <div>
+                    <ul>
+                        <li><strong>Interest</strong> - price for capital use</li>
+                        <li><strong>Profit</strong> - reward for entrepreneurship</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Faces Slide -->
+        <div class="slide">
+            <h2>The Two Faces of Distribution</h2>
+            
+            <div class="two-column">
+                <div class="highlight-box">
+                    <h3>Functional Distribution</h3>
+                    <p><strong>The Macro Perspective</strong></p>
+                    <p>How total income is divided among factors of production:</p>
+                    <ul>
+                        <li>Land → Rent</li>
+                        <li>Labor → Wages</li>
+                        <li>Capital → Interest</li>
+                        <li>Entrepreneurship → Profit</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight-box">
+                    <h3>Personal Distribution</h3>
+                    <p><strong>The Micro Perspective</strong></p>
+                    <p>How total income is divided among individuals/households:</p>
+                    <ul>
+                        <li>Income inequality</li>
+                        <li>Wealth disparity</li>
+                        <li>Social welfare concerns</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <h4>🔑 Key Insight</h4>
+                <p>Classical economists like Adam Smith and David Ricardo viewed distribution as a partition among social classes. Ricardo called understanding these proportions "the principal problem of Political Economy".</p>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="slide">
+            <h2>Functional vs. Personal Distribution</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Functional Distribution</th>
+                        <th>Personal Distribution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Focus</strong></td>
+                        <td>Source of income (Factors of Production)</td>
+                        <td>Recipient of income (Individuals/Households)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Core Question</strong></td>
+                        <td>What share goes to labor vs. capital?</td>
+                        <td>How is income shared among richest vs. poorest?</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Economic Level</strong></td>
+                        <td>Primarily Macroeconomic</td>
+                        <td>Primarily Microeconomic/Statistical</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key Components</strong></td>
+                        <td>Wages, Rent, Interest, Profit</td>
+                        <td>Income brackets, Quintiles, Deciles</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Concern</strong></td>
+                        <td>Economic structure, Factor productivity</td>
+                        <td>Inequality, Poverty, Social welfare</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Associated Theories</strong></td>
+                        <td>Marginal Productivity, Kaldor's Model, Kalecki's Model</td>
+                        <td>Lorenz Curve, Gini Coefficient, Human Capital Theory</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Personal Distribution Chart - INDIA DATA -->
+        <div class="slide">
+            <h2>Personal Income Distribution in India</h2>
+            <div class="highlight-box">
+                <p>Income inequality remains a significant concern in India, with substantial concentration of wealth among the top earners.</p>
+            </div>
+            <div id="incomeDistChart" class="chart-container"></div>
+            <p class="diagram-label">Figure 1: Income distribution by quintile showing significant concentration at the top in India</p>
+        </div>
+
+        <!-- Marginal Productivity Theory -->
+        <div class="slide">
+            <h2>Marginal Productivity Theory</h2>
+            
+            <div class="highlight-box">
+                <h3>Core Principle</h3>
+                <p>Under competitive conditions, each factor of production is paid a price equal to its marginal contribution to output.</p>
+            </div>
+
+            <h3>Law of Diminishing Marginal Returns</h3>
+            <p>If one input increases while others are fixed, eventually additions yield progressively smaller increases in output.</p>
+
+            <div class="formula-box">
+                <strong>Marginal Physical Product (MPP)</strong><br><br>
+                \[MPP = \frac{\Delta \text{Total Physical Product}}{\Delta \text{Variable Input}}\]
+            </div>
+
+            <div class="key-insight">
+                <h4>📊 Real-World Example: Indian Textile Factory</h4>
+                <p><strong>Fixed Input:</strong> 10 looms</p>
+                <p><strong>Variable Input:</strong> Weavers</p>
+                <ul>
+                    <li>First weaver produces 50 meters/day (MPP = 50)</li>
+                    <li>Second weaver increases total to 120 meters (MPP = 70)</li>
+                    <li>Third weaver increases total to 180 meters (MPP = 60) ← Diminishing returns!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- VMP vs MRP -->
+        <div class="slide">
+            <h2>Valuing Factor Contribution</h2>
+            
+            <div class="two-column">
+                <div class="formula-box">
+                    <h3>Value of Marginal Product (VMP)</h3>
+                    <p>Market value of additional output</p>
+                    \[VMP = MPP \times P\]
+                    <p style="font-size: 0.9em; margin-top: 15px;">Where P = Price of Product</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;"><em>"What is the extra output worth to society?"</em></p>
+                </div>
+                
+                <div class="formula-box">
+                    <h3>Marginal Revenue Product (MRP)</h3>
+                    <p>Change in firm's total revenue</p>
+                    \[MRP = MPP \times MR\]
+                    <p style="font-size: 0.9em; margin-top: 15px;">Where MR = Marginal Revenue</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;"><em>"What is the extra output worth to the firm?"</em></p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Example Calculation (Indian Context)</h3>
+                <p>If the 3rd weaver's MPP = 60 meters and each meter sells for ₹100:</p>
+                <p><strong>VMP</strong> = 60 × ₹100 = <strong>₹6,000</strong></p>
+                <p>If the factory must lower price and MR = ₹85:</p>
+                <p><strong>MRP</strong> = 60 × ₹85 = <strong>₹5,100</strong></p>
+            </div>
+        </div>
+
+        <!-- Profit Maximization -->
+        <div class="slide">
+            <h2>Profit-Maximization Rule</h2>
+            
+            <div class="formula-box" style="background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%); border-color: #ff6b35;">
+                <h3>Employment Decision Rule</h3>
+                \[MRP = MFC\]
+                <p style="margin-top: 20px;">Where MFC = Marginal Factor Cost</p>
+            </div>
+
+            <p>A firm hires additional units of a factor up to the point where the marginal revenue product equals the marginal factor cost.</p>
+
+            <div class="key-insight">
+                <h4>💡 Decision Making (Indian Textile Example)</h4>
+                <p>Using the textile factory example:</p>
+                <ul>
+                    <li>If weaver's MRP = ₹5,100 and daily wage = ₹500 → <strong>HIRE</strong> (profit of ₹4,600)</li>
+                    <li>If next weaver's MRP = ₹450 and wage = ₹500 → <strong>DON'T HIRE</strong> (loss of ₹50)</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <p><strong>Implication:</strong> A firm's MRP curve IS its demand curve for that factor. The downward-sloping MRP reflects diminishing returns.</p>
+            </div>
+        </div>
+
+        <!-- Garment Factory Table -->
+        <div class="slide">
+            <h2>Numerical Illustration: Indian Garment Factory</h2>
+            <p>Imperfectly competitive product market (must lower price to sell more):</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Workers (L)</th>
+                        <th>Total Product</th>
+                        <th>MPP</th>
+                        <th>Price (₹)</th>
+                        <th>Total Revenue</th>
+                        <th>MR</th>
+                        <th>VMP</th>
+                        <th>MRP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>-</td>
+                        <td>₹525</td>
+                        <td>₹0</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>10</td>
+                        <td>10</td>
+                        <td>₹500</td>
+                        <td>₹5,000</td>
+                        <td>₹500</td>
+                        <td>₹5,000</td>
+                        <td>₹5,000</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>25</td>
+                        <td>15</td>
+                        <td>₹475</td>
+                        <td>₹11,875</td>
+                        <td>₹458</td>
+                        <td>₹7,125</td>
+                        <td>₹6,875</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>35</td>
+                        <td>10</td>
+                        <td>₹450</td>
+                        <td>₹15,750</td>
+                        <td>₹388</td>
+                        <td>₹4,500</td>
+                        <td>₹3,875</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>40</td>
+                        <td>5</td>
+                        <td>₹425</td>
+                        <td>₹17,000</td>
+                        <td>₹250</td>
+                        <td>₹2,125</td>
+                        <td>₹1,250</td>
+                    </tr>
+                    <tr style="background: #ffe0e0;">
+                        <td>5</td>
+                        <td>42</td>
+                        <td>2</td>
+                        <td>₹400</td>
+                        <td>₹16,800</td>
+                        <td>-₹100</td>
+                        <td>₹800</td>
+                        <td>-₹200</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="diagram-label">Note the divergence between VMP and MRP in imperfect competition</p>
+        </div>
+
+        <!-- Perfect Competition Diagram -->
+        <div class="slide">
+            <h2>Factor Pricing: Perfect Competition</h2>
+            
+            <div class="highlight-box">
+                <h3>Characteristics</h3>
+                <ul>
+                    <li>Large number of firms</li>
+                    <li>Homogeneous product</li>
+                    <li>Price takers in both product and factor markets</li>
+                    <li><strong>P = MR</strong> (constant price)</li>
+                    <li><strong>VMP = MRP</strong></li>
+                </ul>
+            </div>
+
+            <div id="perfectCompChart" class="chart-container"></div>
+            <p class="diagram-label">Figure 2: Factor market equilibrium under perfect competition - W* = VMP = MRP</p>
+
+            <div class="key-insight">
+                <h4>⚖️ Allocative Efficiency</h4>
+                <p>Workers are paid exactly the value of their marginal contribution to society: <strong>W = VMP</strong></p>
+            </div>
+        </div>
+
+        <!-- Monopoly Diagram -->
+        <div class="slide">
+            <h2>Factor Pricing: Monopoly</h2>
+            
+            <div class="highlight-box">
+                <h3>Characteristics</h3>
+                <ul>
+                    <li>Single seller in product market</li>
+                    <li>Price maker (faces downward-sloping demand)</li>
+                    <li><strong>MR < P</strong> (must lower price to sell more)</li>
+                    <li><strong>MRP < VMP</strong></li>
+                </ul>
+            </div>
+
+            <div id="monopolyChart" class="chart-container"></div>
+            <p class="diagram-label">Figure 3: Monopolistic exploitation - Workers paid less than their value (W < VMP)</p>
+
+            <div class="key-insight">
+                <h4>⚠️ Monopolistic Exploitation</h4>
+                <p>Joan Robinson's term: Factor is paid <strong>W = MRP < VMP</strong></p>
+                <p>Workers receive less than the value of their marginal product due to firm's market power.</p>
+                <p><strong>Result:</strong> Lower employment than perfect competition.</p>
+            </div>
+        </div>
+
+        <!-- Oligopoly Kinked Demand -->
+        <div class="slide">
+            <h2>Factor Pricing: Oligopoly</h2>
+            
+            <div class="highlight-box">
+                <h3>The Kinked Demand Curve Model</h3>
+                <ul>
+                    <li>Few large firms with strategic interdependence</li>
+                    <li>Rivals won't follow price increases (elastic demand above)</li>
+                    <li>Rivals will match price cuts (inelastic demand below)</li>
+                    <li>Creates "kink" in demand curve and <strong>vertical gap in MR curve</strong></li>
+                </ul>
+            </div>
+
+            <div id="oligopolyChart" class="chart-container"></div>
+            <p class="diagram-label">Figure 4: Kinked demand creates discontinuous MRP - explains wage rigidity</p>
+
+            <div class="key-insight">
+                <h4>📌 Wage & Employment Rigidity</h4>
+                <p>The vertical gap in MRP allows MFC (wage) to fluctuate within a range without changing optimal employment level.</p>
+                <p><strong>Indian Example:</strong> Stable wages in industries like automobiles (Tata Motors, Mahindra) and telecommunications despite cost changes.</p>
+            </div>
+        </div>
+
+        <!-- Market Structure Comparison -->
+        <div class="slide">
+            <h2>Comparison Across Market Structures</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Perfect Competition</th>
+                        <th>Monopoly</th>
+                        <th>Oligopoly</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Product Market Power</strong></td>
+                        <td>Price Taker</td>
+                        <td>Price Maker</td>
+                        <td>Price Maker (strategic)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>P and MR</strong></td>
+                        <td>P = MR</td>
+                        <td>P > MR</td>
+                        <td>P > MR (discontinuous)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VMP and MRP</strong></td>
+                        <td>VMP = MRP</td>
+                        <td>VMP > MRP</td>
+                        <td>VMP > MRP (discontinuous)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hiring Rule</strong></td>
+                        <td>W = VMP</td>
+                        <td>W = MRP</td>
+                        <td>W = MRP</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Factor Payment</strong></td>
+                        <td>Paid full value</td>
+                        <td>"Exploited" (W < VMP)</td>
+                        <td>"Exploited" (W < VMP); rigid wages</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Employment Level</strong></td>
+                        <td>Benchmark</td>
+                        <td>Lower</td>
+                        <td>Lower; rigid</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Competition Type</strong></td>
+                        <td>Price Competition</td>
+                        <td>Barriers to Entry</td>
+                        <td>Non-Price Competition</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Kalecki's Model -->
+        <div class="slide">
+            <h2>Kalecki's "Degree of Monopoly" Model</h2>
+            
+            <div class="highlight-box">
+                <h3>Core Argument</h3>
+                <p>Distribution is determined by <strong>market structure and power</strong>, not just technology or productivity.</p>
+            </div>
+
+            <p>In imperfectly competitive industries, firms use <strong>markup pricing</strong>:</p>
+            
+            <div class="formula-box">
+                <p>Price = Average Variable Cost + Markup (μ)</p>
+            </div>
+
+            <h3>Distributive Shares</h3>
+            <div class="two-column">
+                <div class="formula-box">
+                    <strong>Profit Share</strong><br><br>
+                    \[\frac{\Pi}{Y} = \frac{\mu}{1 + \mu}\]
+                </div>
+                <div class="formula-box">
+                    <strong>Wage Share</strong><br><br>
+                    \[\frac{W}{Y} = \frac{1}{1 + \mu}\]
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <h4>🔑 Central Implication</h4>
+                <p><strong>Distribution is a power dynamic:</strong> Higher monopoly power → larger markups → higher profit share → lower wage share</p>
+                <p><strong>Indian Context:</strong> Corporate concentration in sectors like telecom (Jio, Airtel, Vi) and e-commerce affects income distribution.</p>
+            </div>
+        </div>
+
+        <!-- Kaldor's Model -->
+        <div class="slide">
+            <h2>Kaldor's Savings and Investment Model</h2>
+            
+            <div class="highlight-box">
+                <h3>Core Insight</h3>
+                <p>Distribution determined by <strong>aggregate investment</strong> and <strong>differential savings behavior</strong> between capitalists and workers.</p>
+            </div>
+
+            <p><strong>Key Assumption:</strong> Capitalists save more than workers (s<sub>p</sub> > s<sub>w</sub>)</p>
+
+            <div class="formula-box">
+                <strong>Profit Share Equation</strong><br><br>
+                \[\frac{P}{Y} = \left(\frac{1}{s_p - s_w}\right) \frac{I}{Y} - \left(\frac{s_w}{s_p - s_w}\right)\]
+            </div>
+
+            <div class="key-insight">
+                <h4>💰 The Famous Aphorism</h4>
+                <p style="font-size: 1.3em; text-align: center; font-style: italic; margin: 20px 0;">
+                    "Capitalists get what they spend (on investment),<br>
+                    and workers spend what they get (on consumption)."
+                </p>
+                <p>Higher investment rate → Higher profit share needed to generate required savings</p>
+                <p><strong>Indian Relevance:</strong> India's push for infrastructure investment has implications for income distribution.</p>
+            </div>
+        </div>
+
+        <!-- Investment Impact Chart -->
+        <div class="slide">
+            <h2>Investment and Profit Share Relationship</h2>
+            <div id="kaldorChart" class="chart-container"></div>
+            <p class="diagram-label">Figure 5: Kaldor's Model - Profit share increases with investment ratio</p>
+        </div>
+
+        <!-- Non-Price Competition -->
+        <div class="slide">
+            <h2>Non-Price Competition Impact</h2>
+            
+            <div class="highlight-box">
+                <h3>What is Non-Price Competition?</h3>
+                <p>Competing through branding, advertising, quality, customer service, and innovation instead of price.</p>
+            </div>
+
+            <h3>Two-Fold Impact on Factor Demand:</h3>
+            
+            <div class="two-column">
+                <div class="key-insight">
+                    <h4>1. Level of Demand</h4>
+                    <p>Successful campaigns increase product demand → raises price/MR → increases MRP for production factors</p>
+                    <p><strong>Result:</strong> Hire more traditional workers</p>
+                </div>
+                
+                <div class="key-insight">
+                    <h4>2. Composition of Demand</h4>
+                    <p>Creates demand for "creative class":</p>
+                    <ul>
+                        <li>Marketing professionals</li>
+                        <li>Data analysts</li>
+                        <li>Designers</li>
+                        <li>Engineers & scientists</li>
+                    </ul>
+                    <p><strong>Result:</strong> Structural shift in labor market</p>
+                </div>
+            </div>
+
+            <div id="nonPriceChart" class="chart-container"></div>
+            <p class="diagram-label">Figure 6: Shift from production to creative/marketing roles in oligopolistic economy</p>
+        </div>
+
+        <!-- Interplay Slide -->
+        <div class="slide">
+            <h2>The Interplay: Linking Functional & Personal Distribution</h2>
+            
+            <div class="highlight-box">
+                <h3>The Classical View Has Blurred</h3>
+                <p>Modern individuals derive income from <strong>multiple sources</strong>:</p>
+                <ul>
+                    <li>Salary (labor)</li>
+                    <li>Rental income (land/capital)</li>
+                    <li>Stock dividends (capital)</li>
+                </ul>
+            </div>
+
+            <div class="key-insight">
+                <h4>🔗 The Critical Link: Asset Ownership</h4>
+                <p>A shift in functional distribution (e.g., declining labor share) has <strong>indeterminate effects</strong> on personal inequality—it depends on who owns capital!</p>
+            </div>
+
+            <div class="two-column">
+                <div style="background: #ffebee; padding: 20px; border-radius: 10px; border-left: 5px solid #c62828;">
+                    <h4>Scenario A: Concentrated Capital</h4>
+                    <p>If capital owned by wealthy elite:</p>
+                    <p>↓ Labor share + Rising profits = <strong>↑↑ Inequality</strong></p>
+                    <p><em>Indian context: High wealth concentration among top 1%</em></p>
+                </div>
+                
+                <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; border-left: 5px solid #2e7d32;">
+                    <h4>Scenario B: Widespread Capital</h4>
+                    <p>If workers own capital (pensions, stocks):</p>
+                    <p>↓ Labor share + Rising profits = <strong>→ Moderate inequality</strong></p>
+                    <p><em>Indian context: Growing mutual fund and stock market participation</em></p>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 30px;">
+                <p><strong>"Homoploutia":</strong> High earners receiving substantial income from both labor (high salaries) AND capital (investments)</p>
+            </div>
+        </div>
+
+        <!-- Lorenz Curve -->
+        <div class="slide">
+            <h2>Measuring Personal Distribution</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Lorenz Curve</h3>
+                    <p>Graphical representation of income distribution</p>
+                    <ul>
+                        <li>X-axis: Cumulative % of population</li>
+                        <li>Y-axis: Cumulative % of income</li>
+                        <li>Line of Perfect Equality (45°)</li>
+                        <li>Actual distribution curve below</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Gini Coefficient</h3>
+                    <p>Numerical measure derived from Lorenz Curve</p>
+                    <ul>
+                        <li>Range: 0 (perfect equality) to 1 (perfect inequality)</li>
+                        <li>Area between curves / Total area</li>
+                        <li>Higher value = more inequality</li>
+                        <li><strong>India's Gini: ~0.35-0.48 (World Bank estimates)</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="lorenzChart" class="chart-container"></div>
+            <p class="diagram-label">Figure 7: Lorenz Curve for India - Greater bow indicates higher inequality</p>
+        </div>
+
+        <!-- Conclusion Slide -->
+        <div class="slide">
+            <h2>Synthesis & Key Takeaways</h2>
+            
+            <div class="highlight-box">
+                <h3>🎯 Central Themes</h3>
+                <ul>
+                    <li><strong>Functional vs. Personal:</strong> Bridged by asset ownership patterns</li>
+                    <li><strong>Marginal Productivity:</strong> Provides logic for factor demand (MRP = MFC)</li>
+                    <li><strong>Market Power Matters:</strong> Perfect competition → fair pay; Imperfect → exploitation</li>
+                    <li><strong>Macro Forces:</strong> Distribution shaped by monopoly power (Kalecki) and investment (Kaldor)</li>
+                </ul>
+            </div>
+
+            <div class="two-column" style="margin-top: 30px;">
+                <div class="key-insight">
+                    <h4>From Theory...</h4>
+                    <ul>
+                        <li>VMP = MRP (perfect competition)</li>
+                        <li>VMP > MRP (monopoly/oligopoly)</li>
+                        <li>W = MRP (hiring rule)</li>
+                        <li>Diminishing returns drive demand</li>
+                    </ul>
+                </div>
+                
+                <div class="key-insight">
+                    <h4>...To Policy (Indian Context)</h4>
+                    <ul>
+                        <li>Minimum wage laws (₹176/day)</li>
+                        <li>Labor union role & reforms</li>
+                        <li>Competition Commission of India</li>
+                        <li>Progressive taxation & GST</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #0f3460 0%, #16213e 100%); color: white; padding: 30px; border-radius: 15px; margin-top: 30px; text-align: center;">
+                <h3 style="color: white; margin-bottom: 20px;">The Bottom Line</h3>
+                <p style="font-size: 1.3em; line-height: 1.8;">
+                    Distribution theory is not mere academic exercise—it's an <strong>indispensable tool</strong> for comprehending and addressing the economic structures that shape modern society, particularly relevant for India's growing economy.
+                </p>
+            </div>
+        </div>
+
+        <!-- References Slide 1 -->
+        <div class="slide references-slide">
+            <h2>References</h2>
+            
+            <div class="reference-item">
+                <strong>1.</strong> Britannica. "Distribution theory". <a href="https://www.britannica.com/money/distribution-theory" target="_blank">https://www.britannica.com/money/distribution-theory</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>2.</strong> Wikipedia. "Distribution (economics)". <a href="https://en.wikipedia.org/wiki/Distribution_(economics)" target="_blank">https://en.wikipedia.org/wiki/Distribution_(economics)</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>3.</strong> Wikipedia. "Income distribution". <a href="https://en.wikipedia.org/wiki/Income_distribution" target="_blank">https://en.wikipedia.org/wiki/Income_distribution</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>4.</strong> Pressidium. "Theory Of Distribution Economics". <a href="https://app1-c89-pub.pressidium.com/economics-suggest-010/theory-of-distribution-economics.pdf" target="_blank">https://app1-c89-pub.pressidium.com/economics-suggest-010/theory-of-distribution-economics.pdf</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>5.</strong> Unacademy. "The Theory Of Distribution". <a href="https://unacademy.com/content/bank-exam/study-material/general-awareness/the-theory-of-distribution/" target="_blank">https://unacademy.com/content/bank-exam/study-material/general-awareness/the-theory-of-distribution/</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>6.</strong> Britannica. "Distribution theory | Economics, Income Inequality & Wealth". <a href="https://www.britannica.com/money/distribution-theory" target="_blank">https://www.britannica.com/money/distribution-theory</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>7.</strong> Scribd. "Functional Distribution and Personal Distribution". <a href="https://www.scribd.com/document/514419490/Functional-Distribution-and-Personal-Distribution" target="_blank">https://www.scribd.com/document/514419490/Functional-Distribution-and-Personal-Distribution</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>8.</strong> Fiveable. "Functional distribution of income - Intermediate Microeconomic Theory". <a href="https://fiveable.me/key-terms/intermediate-microeconomic-theory/functional-distribution-of-income" target="_blank">https://fiveable.me/key-terms/intermediate-microeconomic-theory/functional-distribution-of-income</a>
+            </div>
+        </div>
+
+        <!-- References Slide 2 -->
+        <div class="slide references-slide">
+            <h2>References (Continued)</h2>
+            
+            <div class="reference-item">
+                <strong>9.</strong> Taylor & Francis Online. "A Contemporary Perspective on Social Classes and functional Income Distribution". <a href="https://www.tandfonline.com/doi/full/10.1080/09538259.2024.2397671" target="_blank">https://www.tandfonline.com/doi/full/10.1080/09538259.2024.2397671</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>10.</strong> SlideShare. "Size and functional distribution of income". <a href="https://www.slideshare.net/slideshow/size-and-functional-distribution-of-income/78865684" target="_blank">https://www.slideshare.net/slideshow/size-and-functional-distribution-of-income/78865684</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>11.</strong> Britannica. "Distribution theory - Income, Wealth, Inequality". <a href="https://www.britannica.com/money/distribution-theory/Aspects-of-distribution" target="_blank">https://www.britannica.com/money/distribution-theory/Aspects-of-distribution</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>12.</strong> Bertola et al. (2006). "Income Distribution in Macroeconomic Models". <a href="http://piketty.pse.ens.fr/fichiers/enseig/ecoineg/articl/Bertolaetal2006.pdf" target="_blank">http://piketty.pse.ens.fr/fichiers/enseig/ecoineg/articl/Bertolaetal2006.pdf</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>13.</strong> Fiveable. "Personal distribution of income - Intermediate Microeconomic Theory". <a href="https://fiveable.me/key-terms/intermediate-microeconomic-theory/personal-distribution-of-income" target="_blank">https://fiveable.me/key-terms/intermediate-microeconomic-theory/personal-distribution-of-income</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>14.</strong> EBSCO. "Income Distribution | Research Starters". <a href="https://www.ebsco.com/research-starters/economics/income-distribution" target="_blank">https://www.ebsco.com/research-starters/economics/income-distribution</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>15.</strong> U.S. Bureau of Economic Analysis. "Distribution of Personal Income". <a href="https://www.bea.gov/data/special-topics/distribution-of-personal-income" target="_blank">https://www.bea.gov/data/special-topics/distribution-of-personal-income</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>16.</strong> IMF Working Paper. "Functional Income Distribution and Its Role in Explaining Inequality" by Francese & Mulas-Granados. <a href="https://www.imf.org/external/pubs/ft/wp/2015/wp15244.pdf" target="_blank">https://www.imf.org/external/pubs/ft/wp/2015/wp15244.pdf</a>
+            </div>
+        </div>
+
+        <!-- References Slide 3 -->
+        <div class="slide references-slide">
+            <h2>References (Continued)</h2>
+            
+            <div class="reference-item">
+                <strong>17.</strong> Oxford Reference. "Functional income distribution". <a href="https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095838360" target="_blank">https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095838360</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>18.</strong> SlideShare. "Macroeconomics: distribution II sem 2080". <a href="https://www.slideshare.net/slideshow/macroeconomics-distributionii-sem2080pdf/266599971" target="_blank">https://www.slideshare.net/slideshow/macroeconomics-distributionii-sem2080pdf/266599971</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>19.</strong> ResearchGate. "Functional distribution, personal income inequality, and top shares of income: do social classes still matter?". <a href="https://www.researchgate.net/publication/382073888" target="_blank">https://www.researchgate.net/publication/382073888</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>20.</strong> Fiveable. "Theory of Distribution - Intermediate Microeconomic Theory". <a href="https://fiveable.me/key-terms/intermediate-microeconomic-theory/theory-of-distribution" target="_blank">https://fiveable.me/key-terms/intermediate-microeconomic-theory/theory-of-distribution</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>21.</strong> Economics Discussion. "Marginal Productivity Theory of Distribution". <a href="https://www.economicsdiscussion.net/theory-of-distribution/marginal-productivity-theory-of-distribution-2/7406" target="_blank">https://www.economicsdiscussion.net/theory-of-distribution/marginal-productivity-theory-of-distribution-2/7406</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>22.</strong> AmosWEB. "Marginal physical product". <a href="https://www.amosweb.com/cgi-bin/awb_nav.pl?s=wpd&c=dsp&k=marginal+physical+product" target="_blank">https://www.amosweb.com/cgi-bin/awb_nav.pl?s=wpd&c=dsp&k=marginal+physical+product</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>23.</strong> Investopedia. "The Law of Diminishing Marginal Productivity". <a href="https://www.investopedia.com/terms/l/law-diminishing-marginal-productivity.asp" target="_blank">https://www.investopedia.com/terms/l/law-diminishing-marginal-productivity.asp</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>24.</strong> Wikipedia. "Marginal product". <a href="https://en.wikipedia.org/wiki/Marginal_product" target="_blank">https://en.wikipedia.org/wiki/Marginal_product</a>
+            </div>
+        </div>
+
+        <!-- References Slide 4 -->
+        <div class="slide references-slide">
+            <h2>References (Continued)</h2>
+            
+            <div class="reference-item">
+                <strong>25.</strong> Gauth. "Define Marginal Physical Product". <a href="https://www.gauthmath.com/solution/z-UWDDIrDxe/Define-Marginal-Physical-Product-" target="_blank">https://www.gauthmath.com/solution/z-UWDDIrDxe/Define-Marginal-Physical-Product-</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>26.</strong> IJIRCST. "A Basic Approach on Factor Price Determination". <a href="https://www.ijircst.org/DOC/ebch_1459-10.pdf" target="_blank">https://www.ijircst.org/DOC/ebch_1459-10.pdf</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>27.</strong> The Business Professor. "Value of Marginal Product Explained". <a href="https://thebusinessprofessor.com/value-of-marginal-product-explained/" target="_blank">https://thebusinessprofessor.com/value-of-marginal-product-explained/</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>28.</strong> Scribd. "Concept of VMP and MRP". <a href="https://www.scribd.com/document/713241973/concept-of-VMP-and-MRP" target="_blank">https://www.scribd.com/document/713241973/concept-of-VMP-and-MRP</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>29.</strong> Pressidium. "VMP Economics". <a href="https://app1-c89-pub.pressidium.com/economics-suggest-011/vmp-economics.pdf" target="_blank">https://app1-c89-pub.pressidium.com/economics-suggest-011/vmp-economics.pdf</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>30.</strong> Maharaja College. "Factor Pricing, concept of VMP and MRP". <a href="http://maharajacollege.ac.in/fileupload/uploads/686697007159720250703144312Factor%20Pricing.pdf" target="_blank">http://maharajacollege.ac.in/fileupload/uploads/686697007159720250703144312Factor%20Pricing.pdf</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>31.</strong> Equirus Wealth. "Marginal Revenue Product (MRP): Meaning, Formula, Uses". <a href="https://www.equiruswealth.com/glossary/marginal-revenue-product-mrp" target="_blank">https://www.equiruswealth.com/glossary/marginal-revenue-product-mrp</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>32.</strong> AmosWEB. "Marginal revenue product". <a href="https://www.amosweb.com/cgi-bin/awb_nav.pl?s=wpd&c=dsp&k=marginal+revenue+product" target="_blank">https://www.amosweb.com/cgi-bin/awb_nav.pl?s=wpd&c=dsp&k=marginal+revenue+product</a>
+            </div>
+        </div>
+
+        <!-- References Slide 5 -->
+        <div class="slide references-slide">
+            <h2>References (Continued)</h2>
+            
+            <div class="reference-item">
+                <strong>33.</strong> Open Textbooks for Hong Kong. "Marginal Revenue Product and Marginal Factor Cost". <a href="https://www.opentextbooks.org.hk/ditatopic/24666" target="_blank">https://www.opentextbooks.org.hk/ditatopic/24666</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>34.</strong> Tutor2u. "Marginal revenue product (MRP)". <a href="https://www.tutor2u.net/economics/topics/marginal-revenue-product-of-labour" target="_blank">https://www.tutor2u.net/economics/topics/marginal-revenue-product-of-labour</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>35.</strong> CA Sri Lanka. "Factor Markets With Emphasis on the Labor Market". <a href="https://www.casrilanka.com/casl/images/stories/PDBF/factor_markets.ppt" target="_blank">https://www.casrilanka.com/casl/images/stories/PDBF/factor_markets.ppt</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>36.</strong> SlideShare. "General Theory of Factor Pricing". <a href="https://www.slideshare.net/slideshow/general-theory-of-factor-pricing/172211081" target="_blank">https://www.slideshare.net/slideshow/general-theory-of-factor-pricing/172211081</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>37.</strong> Harper College. "Chapter 12a Notes". <a href="http://www2.harpercollege.edu/mhealy/eco211f/micvideonotes12a.htm" target="_blank">http://www2.harpercollege.edu/mhealy/eco211f/micvideonotes12a.htm</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>38-40.</strong> Sparkl & Diversification.com. "Value of marginal product (VMP) & Marginal Revenue Product". Multiple sources on MRP applications and real-world uses.
+            </div>
+            
+            <div class="reference-item">
+                <strong>41.</strong> Scribd. "Demand For Factor Marginal Productivity Theory". <a href="https://www.scribd.com/document/887469291/Demand-for-Factor-Marginal-Productivity-Theory" target="_blank">https://www.scribd.com/document/887469291</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>42-43.</strong> Fiveable & LSE. "Perfectly Competitive Labor Markets" and "Income Distribution and Inequality". <a href="https://eprints.lse.ac.uk/3780/1/Income_Distribution_and_Inequality.pdf" target="_blank">LSE Research Paper</a>
+            </div>
+        </div>
+
+        <!-- References Slide 6 (Final) -->
+        <div class="slide references-slide">
+            <h2>References (Final)</h2>
+            
+            <div class="reference-item">
+                <strong>44-47.</strong> Plutus IAS & Ecoholics. "Kalecki's Model" and "Kaldor's Theory of Distribution". <a href="https://plutusias.com/kaleckis-model/" target="_blank">https://plutusias.com/kaleckis-model/</a> and <a href="https://plutusias.com/kaldor-model/" target="_blank">https://plutusias.com/kaldor-model/</a>
+            </div>
+            
+            <div class="reference-item">
+                <strong>48-54.</strong> Multiple sources on Perfect Competition including Investopedia, Wikipedia, Lumen Learning, SFU, and Your Article Library covering perfect competition theory and factor price determination.
+            </div>
+            
+            <div class="reference-item">
+                <strong>55-60.</strong> Sources on Imperfect Competition and Monopoly including Wikipedia, Khan Academy, Economics Discussion covering monopoly markets, marginal revenue, and factor pricing under imperfect competition.
+            </div>
+            
+            <div class="reference-item">
+                <strong>61-67.</strong> Oligopoly sources including Scribd, Vedantu, Pearson, Economics Help covering price determination, kinked demand curve model, and oligopoly characteristics.
+            </div>
+            
+            <div class="reference-item">
+                <strong>68-70.</strong> Wikipedia & YouTube. "Non-price competition" covering non-price competitive strategies and examples.
+            </div>
+            
+            <div class="reference-item">
+                <strong>71.</strong> IMF F&D Magazine. "Redistribution of Income and Reducing Economic Inequality". <a href="https://www.imf.org/en/Publications/fandd/issues/2018/03/bourguignon" target="_blank">https://www.imf.org/en/Publications/fandd/issues/2018/03/bourguignon</a>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 30px;">
+                <p><strong>Note:</strong> All sources accessed on October 31, 2025. Complete URLs and detailed citations available in the original document.</p>
+            </div>
+        </div>
+
+        <!-- Thank You Slide -->
+        <div class="slide title-slide">
+            <div class="content">
+                <h1>Thank You!</h1>
+                <div class="decorative-line"></div>
+                <div class="subtitle" style="margin-top: 50px;">Questions & Discussion</div>
+                <div style="margin-top: 80px; font-size: 1.2em;">
+                    <p><strong>Dhritabrata Swarnakar & Lav Yadav</strong></p>
+                    <p style="margin-top: 30px; font-style: italic; opacity: 0.9;">Department of Management</p>
+                    <p style="opacity: 0.9;">National Institute of Technology, Warangal</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="navigation">
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑ Top</button>
+        <button onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">↓ Bottom</button>
+    </div>
+
+    <script>
+        // Income Distribution Chart - INDIA DATA
+        const incomeData = [{
+            x: ['Lowest 20%', 'Second 20%', 'Third 20%', 'Fourth 20%', 'Highest 20%'],
+            y: [4.8, 8.5, 13.2, 21.5, 52.0],
+            type: 'bar',
+            marker: {
+                color: ['#c0392b', '#d35400', '#f39c12', '#27ae60', '#8e44ad'],
+                line: {
+                    color: '#2c3e50',
+                    width: 2
+                }
+            },
+            text: ['4.8%', '8.5%', '13.2%', '21.5%', '52.0%'],
+            textposition: 'outside',
+            textfont: {
+                size: 14,
+                color: '#2c3e50',
+                family: 'Poppins'
+            }
+        }];
+
+        const incomeLayout = {
+            title: {
+                text: 'India: Income Distribution by Quintile (Estimated)',
+                font: { size: 20, color: '#2c3e50', family: 'Playfair Display' }
+            },
+            xaxis: { 
+                title: 'Income Quintile',
+                titlefont: { size: 16, color: '#34495e', family: 'Poppins' },
+                tickfont: { size: 14, family: 'Poppins' }
+            },
+            yaxis: { 
+                title: 'Share of Total Income (%)',
+                titlefont: { size: 16, color: '#34495e', family: 'Poppins' },
+                tickfont: { size: 14, family: 'Poppins' },
+                range: [0, 60]
+            },
+            plot_bgcolor: '#f8f9fa',
+            paper_bgcolor: '#ffffff',
+            margin: { t: 80, b: 80, l: 80, r: 40 }
+        };
+
+        Plotly.newPlot('incomeDistChart', incomeData, incomeLayout, {responsive: true});
+
+        // Perfect Competition Chart
+        const laborQuantity = [0, 10, 20, 30, 40, 50, 60, 70, 80];
+        const mrpValues = [50, 45, 40, 35, 30, 25, 20, 15, 10];
+        const wageRate = 30;
+
+        const perfectCompData = [
+            {
+                x: laborQuantity,
+                y: mrpValues,
+                mode: 'lines',
+                name: 'MRP = VMP = Demand',
+                line: { color: '#0f3460', width: 3 }
+            },
+            {
+                x: laborQuantity,
+                y: Array(laborQuantity.length).fill(wageRate),
+                mode: 'lines',
+                name: 'Wage = MFC = Supply',
+                line: { color: '#e94560', width: 3, dash: 'dash' }
+            }
+        ];
+
+        const perfectCompLayout = {
+            title: {
+                text: 'Factor Market Equilibrium: Perfect Competition',
+                font: { size: 18, color: '#2c3e50', family: 'Playfair Display' }
+            },
+            xaxis: { 
+                title: 'Quantity of Labor',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            yaxis: { 
+                title: 'Wage / Revenue (₹ in hundreds)',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            annotations: [
+                {
+                    x: 40,
+                    y: 30,
+                    text: 'Equilibrium: W* = MRP = VMP',
+                    showarrow: true,
+                    arrowhead: 2,
+                    ax: 40,
+                    ay: -40,
+                    font: { size: 14, color: '#16a085', family: 'Poppins' }
+                }
+            ],
+            plot_bgcolor: '#f8f9fa',
+            paper_bgcolor: '#ffffff',
+            showlegend: true,
+            legend: { x: 0.65, y: 0.95, font: {family: 'Poppins'} }
+        };
+
+        Plotly.newPlot('perfectCompChart', perfectCompData, perfectCompLayout, {responsive: true});
+
+        // Monopoly Chart
+        const monopolyData = [
+            {
+                x: laborQuantity,
+                y: mrpValues,
+                mode: 'lines',
+                name: 'VMP (Value to Society)',
+                line: { color: '#27ae60', width: 3 }
+            },
+            {
+                x: laborQuantity,
+                y: mrpValues.map(v => v * 0.7),
+                mode: 'lines',
+                name: 'MRP (Monopoly Demand)',
+                line: { color: '#c0392b', width: 3 }
+            },
+            {
+                x: laborQuantity,
+                y: Array(laborQuantity.length).fill(21),
+                mode: 'lines',
+                name: 'Wage = MFC',
+                line: { color: '#34495e', width: 3, dash: 'dash' }
+            }
+        ];
+
+        const monopolyLayout = {
+            title: {
+                text: 'Monopolistic Exploitation: VMP > MRP',
+                font: { size: 18, color: '#2c3e50', family: 'Playfair Display' }
+            },
+            xaxis: { 
+                title: 'Quantity of Labor',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            yaxis: { 
+                title: 'Wage / Revenue (₹ in hundreds)',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            annotations: [
+                {
+                    x: 30,
+                    y: 35,
+                    text: 'Exploitation Gap',
+                    showarrow: true,
+                    arrowhead: 2,
+                    ax: 0,
+                    ay: -40,
+                    font: { size: 14, color: '#c0392b', family: 'Poppins' }
+                }
+            ],
+            shapes: [
+                {
+                    type: 'rect',
+                    x0: 28,
+                    y0: 21,
+                    x1: 32,
+                    y1: 35,
+                    fillcolor: '#e74c3c',
+                    opacity: 0.2,
+                    line: { width: 0 }
+                }
+            ],
+            plot_bgcolor: '#f8f9fa',
+            paper_bgcolor: '#ffffff',
+            showlegend: true,
+            legend: { x: 0.55, y: 0.95, font: {family: 'Poppins'} }
+        };
+
+        Plotly.newPlot('monopolyChart', monopolyData, monopolyLayout, {responsive: true});
+
+        // Oligopoly Kinked Demand
+        const oligopolyData = [
+            {
+                x: [0, 10, 20, 30, 35],
+                y: [60, 50, 40, 32, 30],
+                mode: 'lines',
+                name: 'MRP (upper)',
+                line: { color: '#8e44ad', width: 3 }
+            },
+            {
+                x: [35, 40, 50, 60, 70],
+                y: [25, 23, 20, 18, 15],
+                mode: 'lines',
+                name: 'MRP (lower)',
+                line: { color: '#8e44ad', width: 3 }
+            },
+            {
+                x: [35, 35],
+                y: [30, 25],
+                mode: 'lines',
+                name: 'Discontinuity',
+                line: { color: '#e74c3c', width: 4, dash: 'dot' }
+            },
+            {
+                x: [0, 70],
+                y: [27, 27],
+                mode: 'lines',
+                name: 'Wage (MFC)',
+                line: { color: '#16a085', width: 3, dash: 'dash' }
+            }
+        ];
+
+        const oligopolyLayout = {
+            title: {
+                text: 'Oligopoly: Discontinuous MRP & Wage Rigidity',
+                font: { size: 18, color: '#2c3e50', family: 'Playfair Display' }
+            },
+            xaxis: { 
+                title: 'Quantity of Labor',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            yaxis: { 
+                title: 'Wage / Revenue (₹ in hundreds)',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            annotations: [
+                {
+                    x: 35,
+                    y: 27.5,
+                    text: 'Vertical Gap<br>Wage can vary here<br>without changing L*',
+                    showarrow: true,
+                    arrowhead: 2,
+                    ax: 80,
+                    ay: 0,
+                    font: { size: 12, color: '#c0392b', family: 'Poppins' }
+                }
+            ],
+            plot_bgcolor: '#f8f9fa',
+            paper_bgcolor: '#ffffff',
+            showlegend: true,
+            legend: { x: 0.6, y: 0.95, font: {family: 'Poppins'} }
+        };
+
+        Plotly.newPlot('oligopolyChart', oligopolyData, oligopolyLayout, {responsive: true});
+
+        // Kaldor Model Chart
+        const investmentRatio = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4];
+        const profitShare = investmentRatio.map(i => (i - 0.05) / (0.35 - 0.1));
+
+        const kaldorData = [{
+            x: investmentRatio.map(i => i * 100),
+            y: profitShare.map(p => p * 100),
+            mode: 'lines+markers',
+            name: 'Profit Share',
+            line: { color: '#e67e22', width: 4 },
+            marker: { size: 10, color: '#d35400' }
+        }];
+
+        const kaldorLayout = {
+            title: {
+                text: 'Kaldor Model: Investment Ratio vs Profit Share',
+                font: { size: 18, color: '#2c3e50', family: 'Playfair Display' }
+            },
+            xaxis: { 
+                title: 'Investment / Income Ratio (%)',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            yaxis: { 
+                title: 'Profit Share (%)',
+                titlefont: { size: 14, family: 'Poppins' },
+                showgrid: true,
+                gridcolor: '#ecf0f1'
+            },
+            annotations: [
+                {
+                    x: 30,
+                    y: 70,
+                    text: 'Higher investment<br>requires higher<br>profit share',
+                    showarrow: true,
+                    arrowhead: 2,
+                    ax: -60,
+                    ay: -40,
+                    font: { size: 13, color: '#16a085', family: 'Poppins' }
+                }
+            ],
+            plot_bgcolor: '#f8f9fa',
+            paper_bgcolor: '#ffffff'
+        };
+
+        Plotly.newPlot('kaldorChart', kaldorData, kaldorLayout, {responsive: true});
+
+        // Non-Price Competition Impact
+        const categories = ['Production Workers', 'Marketing/Creative', 'Engineers/R&D', 'Admin/Support'];
+        const traditional = [60, 15, 15, 10];
+        const modern = [35, 30, 25, 10];
+
+        const nonPriceData = [
+            {
+                x: categories,
+                y: traditional,
+                name: 'Traditional Economy',
+                type: 'bar',
+                marker: { color: '#95a5a6' }
+            },
+            {
+                x: categories,
+                y: modern,
+                name: 'Modern Oligopolistic Economy',
+                type: 'bar',
+                marker: { color: '#0f3460' }
+            }
+        ];
+
+        const nonPriceLayout = {
+            title: {
+                text: 'Labor Demand Composition Shift (India)',
+                font: { size: 18, color: '#2c3e50', family: 'Playfair Display' }
+            },
+            xaxis: { 
+                title: 'Job Category',
+                titlefont: { size: 14, family: 'Poppins' }
+            },
+            yaxis: { 
+                title: 'Share of Labor Demand (%)',
+                titlefont: { size: 14, family: 'Poppins' }
+            },
+            barmode: 'group',
+            plot_bgcolor: '#f8f9fa',
+            paper_bgcolor: '#ffffff',
+            showlegend: true,
+            legend: { x: 0.25, y: 0.95, font: {family: 'Poppins'} }
+        };
+
+        Plotly.newPlot('nonPriceChart', nonPriceData, nonPriceLayout, {responsive: true});
+
+        // Lorenz Curve - INDIA DATA
+        const population = [0, 20, 40, 60, 80, 100];
+        const perfectEquality = [0, 20, 40, 60, 80, 100];
+        const indiaDistribution = [0, 4.8, 13.3, 26.5, 48.0, 100];
+
+        const lorenzData = [
+            {
+                x: population,
+                y: perfectEquality,
+                mode: 'lines',
+                name: 'Perfect Equality',
+                line: { color: '#95a5a6', width: 2, dash: 'dash' }
+            },
+            {
+                x: population,
+                y: indiaDistribution,
+                mode: 'lines',
+                name: 'Actual Distribution (India)',
+                line: { color: '#e74c3c', width: 4 },
+                fill: 'tonexty',
+                fillcolor: 'rgba(231, 76, 60, 0.2)'
+            }
+        ];
+
+        const lorenzLayout = {
+            title: {
+                text: 'Lorenz Curve: Income Inequality in India',
+                font: { size: 18, color: '#2c3e50', family: 'Playfair Display' }
+            },
+            xaxis: { 
+                title: 'Cumulative % of Population',
+                titlefont: { size: 14, family: 'Poppins' },
+                range: [0, 100]
+            },
+            yaxis: { 
+                title: 'Cumulative % of Income',
+                titlefont: { size: 14, family: 'Poppins' },
+                range: [0, 100]
+            },
+            annotations: [
+                {
+                    x: 50,
+                    y: 30,
+                    text: 'Inequality Area<br>(Gini ≈ 0.35-0.48)',
+                    showarrow: true,
+                    arrowhead: 2,
+                    ax: 40,
+                    ay: 40,
+                    font: { size: 13, color: '#c0392b', family: 'Poppins' }
+                }
+            ],
+            plot_bgcolor: '#f8f9fa',
+            paper_bgcolor: '#ffffff',
+            showlegend: true,
+            legend: { x: 0.1, y: 0.9, font: {family: 'Poppins'} }
+        };
+
+        Plotly.newPlot('lorenzChart', lorenzData, lorenzLayout, {responsive: true});
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.slide').forEach(slide => {
+            slide.style.opacity = '0';
+            slide.style.transform = 'translateY(30px)';
+            slide.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(slide);
+        });
+    </script>
+</body>
+</html>
+                    
